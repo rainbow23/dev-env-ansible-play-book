@@ -36,3 +36,32 @@
       - zshrc
       - tmux.conf
     listen: Create symlink
+
+- name:  Copy shell files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ home_path }}/{{ item }}"
+    owner: "{{ ansible_user }}"
+    group:  wheel
+    mode: 0755
+  with_items:
+    - set.sh
+    - mru.sh
+  listen: Shell set up
+
+- name: add shell script to .bashrc and .zshrc
+  shell: |
+    cat $HOME/set.sh >> {{ item }}
+    exec $SHELL -l
+  with_items:
+    - ~/.bashrc
+    - ~/.zshrc
+  args:
+    executable: /bin/bash
+  become_user: "{{ ansible_user }}"
+  changed_when: False
+  register: result
+# - debug: var=result
+  listen: Shell set up
+
+
