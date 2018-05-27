@@ -1,5 +1,6 @@
 ---
 # tasks file for ./roles/packages
+- meta: flush_handlers
 - name: main / Add the OS specific varibles
   include_vars: "{{ ansible_os_family }}.yml"
 
@@ -20,41 +21,19 @@
     repo: "{{ item.value.path }}"
     dest: "{{ home_path }}/{{ item.value.dir }}"
     force: yes
-    update: yes
+    update: no
+    # update: yes
   become_user: "{{ ansible_user }}"
   with_dict: "{{ packages_from_github }}"
-  # notify:
+  notify:
+    - Permission change to directories
+    - Create symlink
+    - Shell set up
     # - Compile Vim
     # - Delete cloned directories
 
-- name: Permission change to directories
-  file:
-    path: "{{ home_path }}/{{ item.value.dir }}"
-    owner: "{{ ansible_user }}"
-    group: wheel
-    mode: 0755
-    recurse: true
-    state: directory
-  with_dict: "{{ packages_from_github }}"
-
-- name:  Copy init.sh
-  copy:
-    src: set.sh
-    dest: "{{ home_path }}/.set.sh"
-    owner: "{{ ansible_user }}"
-    group:  wheel
-    mode: 0755
-
-- name: add shell script to .bashrc and .zshrc
-  shell: |
-    cat $HOME/.set.sh >> {{ item }}
-    exec $SHELL -l
-  with_items:
-    - ~/.bashrc
-    - ~/.zshrc
-  args:
-    executable: /bin/bash
-  become_user: "{{ ansible_user }}"
+- name: force notify handler
+  meta: flush_handlers
 
 
 - name: Install autojump
@@ -62,6 +41,8 @@
   args:
     executable: /bin/bash
   become_user: "{{ ansible_user }}"
+  changed_when: False
+  register: result
 
 - name: Install anyenv
   shell: |
@@ -72,6 +53,9 @@
   become_user: "{{ ansible_user }}"
   # when: '"{{ item }}_path.stat.exists ==  False"'
   with_dict: "{{ anyenv }}"
+  changed_when: False
+  register: result
+
 
 - name: Install go, python and activate
   shell: |
@@ -83,6 +67,9 @@
   args:
     executable: /bin/bash
   become_user: "{{ ansible_user }}"
+  changed_when: False
+  register: result
+
 
 - name: Install fzf
   shell: |
@@ -90,3 +77,6 @@
     ./install
     exec $SHELL -l
   become_user: "{{ ansible_user }}"
+  changed_when: False
+  register: result
+

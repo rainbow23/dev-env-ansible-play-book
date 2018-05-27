@@ -16,3 +16,14 @@ anyenv:
   - info: { env: "goenv", ver: "1.8.3" }
   - info: { env: "pyenv", ver: "3.6.0" }
 
+# shell_files:
+#   - info: { path: "~/.bashrc", files:"{{ list }}"}
+#   - info: { path: "~/.zshrc",  files:"{{ list }}"}
+
+# shell_path:
+#   - path: "~/.bashrc"
+#   - path: "~/.zshrc"
+
+# shell_files:
+#   - file: set.sh
+#   - file: mru.sh

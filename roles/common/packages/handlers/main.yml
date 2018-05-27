@@ -1,2 +1,38 @@
 ---
+- name: permission change to directories
+  file:
+    path: "{{ home_path }}/{{ item.value.dir }}"
+    owner: "{{ ansible_user }}"
+    group: wheel
+    mode: 0755
+    recurse: true
+    state: directory
+  with_dict: "{{ packages_from_github }}"
+  listen: Permission change to directories
 
+- block:
+  - name: .bashrcディレクトリの存在チェック
+    stat:
+      path: "{{ home_path }}/.bashrc"
+    register: bc
+    listen: Create symlink
+  - name: Delete file at .bashrc
+    file:
+      path: "{{ home_path }}/.bashrc"
+      state: absent
+    when: bc.stat.exists == True
+    listen: Create symlink
+  - name: create symlink
+    file:
+      src: "{{ home_path }}/dotfiles/_{{ item }}"
+      dest: "{{ home_path }}/.{{ item }}"
+      owner: "{{ ansible_user }}"
+      group: wheel
+      mode: 0755
+      state: link
+    with_items:
+      - vimrc
+      - bashrc
+      - zshrc
+      - tmux.conf
+    listen: Create symlink
