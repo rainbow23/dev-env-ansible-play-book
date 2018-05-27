@@ -5,6 +5,7 @@
   become_user: root
   become: yes
   vars:
+    home_path: "/home/{{ ansible_user }}"
     # ansible_sudo_pass: 'ansible'
     # ansible_sudo_pass: 'fujimaguro'
   # environment:
@@ -14,8 +15,11 @@
   roles:
     # - name: common/locale
     #   tags: locale
+    # - name: common/setting_shell
+    #   tags: setting_shell
     - name: common/packages
       tags: packages
+
     # - role: common/users
     #   tags: users
     # - name: common/networks
