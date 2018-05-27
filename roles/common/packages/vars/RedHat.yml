@@ -1,0 +1,19 @@
+---
+# vars file for ./roles/packages
+
+required_packages:
+  kind:
+    - gcc
+    - lua-devel
+    - perl-ExtUtils-Embed
+    - zlib-devel
+    - bzip2
+    - bzip2-devel
+    - readline-devel
+    - sqlite
+    - sqlite-devel
+    - openssl-devel
+    - tmux
+    - git
+    - zsh
+    - tree

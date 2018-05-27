@@ -1,0 +1,16 @@
+---
+# vars file for ./roles/packages
+github_base_path: "https://github.com"
+
+packages_from_github:
+  info:
+    - { path: "{{ github_base_path }}/wting/autojump.git",     dir: "autojump" }
+    - { path: "{{ github_base_path }}/rainbow23/dotfiles.git", dir: "dotfiles" }
+    - { path: "{{ github_base_path }}/tmux/tmux.git",          dir: "tmuxsrc" }
+    - { path: "{{ github_base_path }}/tmux-plugins/tpm",       dir: ".tmux/plugins/tpm" }
+    - { path: "{{ github_base_path }}/vim/vim",                dir: "vim8src" }
+    - { path: "{{ github_base_path }}/riywo/anyenv",           dir: ".anyenv" }
+    - { path: "{{ github_base_path }}/junegunn/fzf",           dir: ".fzf" }
+    - { path: "{{ github_base_path }}/b4b4r07/enhancd.git",    dir: ".enhancd" }
+
+

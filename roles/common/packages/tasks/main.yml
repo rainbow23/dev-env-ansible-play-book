@@ -1,0 +1,28 @@
+---
+# tasks file for ./roles/packages
+- name: main / Add the OS specific varibles
+  include_vars: "{{ ansible_os_family }}.yml"
+  # include_vars: "../../users/vars/main.yml"
+
+-  debug: var=ansible_os_family
+
+- name: main / Update apt packages
+  apt:
+    update_cache: yes
+  when: ansible_os_family == 'Debian'
+
+- name: main / Install the yum packages
+  yum:
+    name: "{{ item.value }}"
+    state: present
+  with_dict: "{{ required_packages }}"
+  when: ansible_os_family == 'RedHat'
+
+# - name: main / Install packages from github
+#   git:
+#     repo: "/home/{{ user_newusers.key }}"
+#     dest: "{{ home_path }}/{{ item.value.dir }}"
+#     force: yes
+#     update: yes
+#   become_user: "{{ user_newusers.key }}"
+#   with_dict: "{{ packages_from_github }}"

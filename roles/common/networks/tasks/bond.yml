@@ -1,0 +1,32 @@
+---
+# tasks file for ./roles/networks
+- name: network / bond / Load bonding module
+  modprobe:
+    name: bonding
+    state: present
+
+- name: network / bond / Create the bonding device configuration
+  template:
+    src: bond_{{ ansible_os_family }}.j2
+    dest: "{{ net_path }}/ifcfg-{{ item.device }}"
+  with_items: network_bond_interfaces
+  register: bond_result
+
+- name: network / bond / Reload bonding interfaces
+  shell: ifdown {{ item.item.device }}; ifup {{ item.item.device }}
+  with_items: bond_result.results
+  when: bond_result is defined and item.changed
+
+- name: network / bond / Create the slave bonding device configuration
+  template:
+    src: bond_slave_{{ ansible_os_family }}.j2
+    dest: "{{ net_path }}/ifcfg-{{ item.1 }}"
+  with_subelements: 
+   - network_bond_interfaces
+   - bond_slaves
+  register: bond_port_result
+
+- name: network / bond / Reload bonding interfaces
+  shell: ifdown {{ item.item.1 }}; ifup {{ item.item.1 }}
+  with_items: bond_port_result.results
+  when: bond_port_result is defined and item.changed
