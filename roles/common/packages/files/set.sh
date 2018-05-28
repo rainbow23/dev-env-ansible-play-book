@@ -30,5 +30,5 @@ if [ -d $HOME/.anyenv/envs/pyenv ] ; then
     # eval "$(pyenv virtualenv-init -)"
 fi
 
-# mru after install vim
-# source $HOME/mru.sh
+# mru
+source $HOME/mru.sh
