@@ -10,11 +10,17 @@ packages_from_github:
   - info: { path: "{{ github_base_path }}/vim/vim",                dir: "vim8src" }
   - info: { path: "{{ github_base_path }}/riywo/anyenv",           dir: ".anyenv" }
   - info: { path: "{{ github_base_path }}/junegunn/fzf",           dir: ".fzf" }
-  - info: { path: "{{ github_base_path }}/b4b4r07/enhancd.git",    dir: ".enhancd" }
+go_nel]  - info: { path: "{{ github_base_path }}/b4b4r07/enhancd.git",    dir: ".enhancd" }
+
+go_version: "1.8.3"
+python_version: "3.6.0"
 
 anyenv:
-  - info: { env: "goenv", ver: "1.8.3" }
-  - info: { env: "pyenv", ver: "3.6.0" }
+  - info: { env: "goenv", ver: "{{ go_version }}" }
+  - info: { env: "pyenv", ver: "{{ python_version }}" }
+
+pyenv_path: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ python_version }}/bin/python3.6"
+pyenv_gnu: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ python_version }}/lib/python3.6/config-3.6m-x86_64-linux-gnu"
 
 # shell_files:
 #   - info: { path: "~/.bashrc", files:"{{ list }}"}
