@@ -21,8 +21,7 @@
     repo: "{{ item.value.path }}"
     dest: "{{ home_path }}/{{ item.value.dir }}"
     force: yes
-    update: no
-    # update: yes
+    update: yes
   become_user: "{{ ansible_user }}"
   with_dict: "{{ packages_from_github }}"
   notify:

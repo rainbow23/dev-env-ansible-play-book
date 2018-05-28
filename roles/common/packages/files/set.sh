@@ -27,7 +27,7 @@ fi
 if [ -d $HOME/.anyenv/envs/pyenv ] ; then
     export PATH="$HOME/.anyenv/envs/pyenv/bin:$PATH"
     eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
+    # eval "$(pyenv virtualenv-init -)"
 fi
 
 # mru after install vim
