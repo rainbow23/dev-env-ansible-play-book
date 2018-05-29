@@ -10,7 +10,7 @@ packages_from_github:
   - info: { path: "{{ github_base_path }}/vim/vim",                dir: "vim8src" }
   - info: { path: "{{ github_base_path }}/riywo/anyenv",           dir: ".anyenv" }
   - info: { path: "{{ github_base_path }}/junegunn/fzf",           dir: ".fzf" }
-go_nel]  - info: { path: "{{ github_base_path }}/b4b4r07/enhancd.git",    dir: ".enhancd" }
+  - info: { path: "{{ github_base_path }}/b4b4r07/enhancd.git",    dir: ".enhancd" }
 
 go_version: "1.8.3"
 python_version: "3.6.0"

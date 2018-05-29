@@ -28,17 +28,20 @@
     - Permission change to directories
     - Create symlink
     - Shell set up
-    # - Delete cloned directories
 
 - name: force notify handler
   meta: flush_handlers
 
+- name: check autojump file
+  stat:
+    path: "/.autojump/etc/profile.d/autojump.sh"
+  register: aj_path
 - name: Install autojump
   shell: "cd {{ home_path }}/autojump && ./install.py"
   args:
     executable: /bin/bash
   become_user: "{{ ansible_user }}"
-  changed_when: False
+  when: aj_path.stat.exists == False
   register: result
 
 - name: Install anyenv
@@ -76,11 +79,30 @@
   register: result
 
 - block:
+  - name: .vim/autoloadディレクトリの存在チェック
+    stat:
+      path: "{{ home_path }}/.vim/autoload/"
+    register: vim_path
+  - name: Create vim-plug folder
+    file:
+      path: "{{ home_path }}/.vim/autoload"
+      owner: "{{ ansible_user }}"
+      group: wheel
+      mode: 0755
+      state: directory
+    when: vim_path.stat.exists == False
+  - name: Install vim-plug
+    get_url:
+      url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+      dest: "{{ home_path }}/.vim/autoload/plug.vim"
+      mode: 0755
+      owner: "{{ ansible_user }}"
+
+- block:
   - name: /usr/local/bin/vim ディレクトリの存在チェック
     stat:
       path: /usr/local/bin/vim
     register: vim_path
-    # listen: Compile Vim
   - name: compile vim
     shell: >
       cd {{ home_path }}/vim8src && ./configure
@@ -98,8 +120,6 @@
       executable: /bin/bash
     become_user: "{{ ansible_user }}"
     when: vim_path.stat.exists == False
-    # listen: Compile Vim
-
   - name: Make & install Vim
     shell: |
       cd {{ home_path }}/vim8src
@@ -109,7 +129,6 @@
     when: vim_path.stat.exists == False
     args:
       executable: /bin/bash
-    # listen: Compile Vim
 
 - block:
   - name: Delete cloned directories
@@ -120,3 +139,9 @@
       - autojump
       - tmuxsrc
       - vim8src
+
+- name: Default shell to zsh
+  shell: |
+    chsh -s /bin/zsh
+    exec $SHELL -l
+  become_user: "{{ ansible_user }}"
