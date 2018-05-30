@@ -144,7 +144,7 @@
       executable: /bin/bash
   - name: PlugInstall from vim-plug
     shell: |
-      vim -E -s -c "source ~/.vimrc" +PluginInstall +qall -V
+      vim -E -s -c "source ~/.vimrc" +PlugInstall +qall -V
     args:
       executable: /bin/bash
     become_user: "{{ ansible_user }}"
