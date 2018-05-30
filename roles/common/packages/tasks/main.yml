@@ -98,6 +98,19 @@
       mode: 0755
       owner: "{{ ansible_user }}"
 
+
+- block:
+  - name: Install check enhancd finder
+    stat:
+      path: /usr/local/bin/finder
+    register: finder_path
+  - name: Install enhancd finder
+    shell: >
+      sh -c "curl https://raw.githubusercontent.com/b4b4r07/cli-finder/master/bin/finder -o /usr/local/bin/finder && chmod +x /usr/local/bin/finder"
+    args:
+      executable: /bin/bash
+    when: finder_path.stat.exists == False
+
 - block:
   - name: /usr/local/bin/vim ディレクトリの存在チェック
     stat:
@@ -129,6 +142,12 @@
     when: vim_path.stat.exists == False
     args:
       executable: /bin/bash
+  - name: PlugInstall from vim-plug
+    shell: |
+      vim -E -s -c "source ~/.vimrc" +PluginInstall +qall -V
+    args:
+      executable: /bin/bash
+    become_user: "{{ ansible_user }}"
 
 - block:
   - name: Delete cloned directories
