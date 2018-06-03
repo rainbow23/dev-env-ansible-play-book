@@ -17,3 +17,4 @@ required_packages:
     - git
     - zsh
     - tree
+    - neovim

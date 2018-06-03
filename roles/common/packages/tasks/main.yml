@@ -1,6 +1,5 @@
 ---
 # tasks file for ./roles/packages
-
 - name: main / Add the OS specific varibles
   include_vars: "{{ ansible_os_family }}.yml"
 
@@ -8,6 +7,14 @@
   apt:
     update_cache: yes
   when: ansible_os_family == 'Debian'
+
+- name: Download neovim
+  shell: |
+    yum -y install epel-release
+    curl -o /etc/yum.repos.d/dperson-neovim-epel-7.repo https://copr.fedorainfracloud.org/coprs/dperson/neovim/repo/epel-7/dperson-neovim-epel-7.repo
+  args:
+    executable: /bin/bash
+  # become_user: "{{ ansible_user }}"
 
 - name: main / Install the yum packages
   yum:
@@ -79,24 +86,31 @@
   register: result
 
 - block:
-  - name: .vim/autoloadディレクトリの存在チェック
+  - name: vim-plug ディレクトリの存在チェック
     stat:
-      path: "{{ home_path }}/.vim/autoload/"
+      path: "{{ home_path }}/{{ item.path }}"
     register: vim_path
-  - name: Create vim-plug folder
+    with_items: "{{ vim_plug_dir }}"
+  - name: debug vim_path
+    debug:
+      msg: "item.path= {{ item.item.path }} exists= {{ item.stat.exists }}"
+    with_items: "{{ vim_path.results }}"
+  - name: Create vim-plug directory
     file:
-      path: "{{ home_path }}/.vim/autoload"
+      path: "{{ home_path }}/{{ item.item.path }}"
       owner: "{{ ansible_user }}"
       group: wheel
       mode: 0755
       state: directory
-    when: vim_path.stat.exists == False
+    when: item.stat.exists == False
+    with_items: "{{ vim_path.results }}"
   - name: Install vim-plug
     get_url:
       url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-      dest: "{{ home_path }}/.vim/autoload/plug.vim"
+      dest: "{{ home_path }}/{{ item.item.path }}/plug.vim"
       mode: 0755
       owner: "{{ ansible_user }}"
+    with_items: "{{ vim_path.results }}"
 
 
 - block:
@@ -145,6 +159,7 @@
   - name: PlugInstall from vim-plug
     shell: |
       vim -E -s -c "source ~/.vimrc" +PlugInstall +qall -V
+    failed_when: false
     ignore_errors: yes
     args:
       executable: /bin/bash

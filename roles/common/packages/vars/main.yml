@@ -12,29 +12,18 @@ packages_from_github:
   - info: { path: "{{ github_base_path }}/junegunn/fzf",           dir: ".fzf" }
   - info: { path: "{{ github_base_path }}/b4b4r07/enhancd.git",    dir: ".enhancd" }
 
+vim_plug_dir:
+  - path: "/.vim/autoload"
+  - path: "/.local/share/nvim/site/autoload"
+
+
 go_version: "1.8.3"
 python_version: "3.6"
 py_ver: "{{ python_version }}.0"
 
 anyenv:
   - info: { env: "goenv", ver: "{{ go_version }}" }
-  # - info: { env: "pyenv", ver: "{{ python_version }}" }
   - info: { env: "pyenv", ver: "{{ py_ver }}" }
 
-# pyenv_path: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ python_version }}/bin/python3.6"
-# pyenv_gnu: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ python_version }}/lib/python3.6/config-3.6m-x86_64-linux-gnu"
 pyenv_path: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ py_ver }}/bin/python{{ python_version }}"
 pyenv_gnu: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ py_ver }}/lib/python3.6/config-3.6m-x86_64-linux-gnu"
-
-
-# shell_files:
-#   - info: { path: "~/.bashrc", files:"{{ list }}"}
-#   - info: { path: "~/.zshrc",  files:"{{ list }}"}
-
-# shell_path:
-#   - path: "~/.bashrc"
-#   - path: "~/.zshrc"
-
-# shell_files:
-#   - file: set.sh
-#   - file: mru.sh
