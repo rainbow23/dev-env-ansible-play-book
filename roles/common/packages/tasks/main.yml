@@ -176,7 +176,7 @@
       - vim8src
 
 - name: Default shell to zsh
-  shell: |
-    chsh -s /bin/zsh
-    exec $SHELL -l
-  become_user: "{{ ansible_user }}"
+  user:
+    name: "{{ ansible_user }}"
+    shell: /bin/zsh
+  become: true
