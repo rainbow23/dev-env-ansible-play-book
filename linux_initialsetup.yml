@@ -3,7 +3,6 @@
   become: true
   remote_user: "{{ ansible_user }}"
   become_user: root
-  become: yes
   vars:
     home_path: "/home/{{ ansible_user }}"
     # ansible_sudo_pass: 'ansible'

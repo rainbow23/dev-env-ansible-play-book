@@ -3,25 +3,41 @@
 - name: main / Add the OS specific varibles
   include_vars: "{{ ansible_os_family }}.yml"
 
+- name: debug
+  debug:
+    # msg: "os family={{ ansible_os_family }}"
+    msg: "required_packages item={{ item.value  }}"
+  with_dict: '{{ required_packages }}'
+
 - name: main / Update apt packages
   apt:
     update_cache: yes
   when: ansible_os_family == 'Debian'
 
-- name: Download neovim
-  shell: |
-    yum -y install epel-release
-    curl -o /etc/yum.repos.d/dperson-neovim-epel-7.repo https://copr.fedorainfracloud.org/coprs/dperson/neovim/repo/epel-7/dperson-neovim-epel-7.repo
-  args:
-    executable: /bin/bash
-  # become_user: "{{ ansible_user }}"
-
-- name: main / Install the yum packages
-  yum:
-    name: "{{ item.value }}"
-    state: present
-  with_dict: "{{ required_packages }}"
+- block:
+  - name: Download neovim
+    shell: |
+      yum -y install epel-release
+      curl -o /etc/yum.repos.d/dperson-neovim-epel-7.repo https://copr.fedorainfracloud.org/coprs/dperson/neovim/repo/epel-7/dperson-neovim-epel-7.repo
+    args:
+      executable: /bin/bash
+  - name: main / Install the yum packages
+    yum:
+      name: "{{ item.value }}"
+      state: present
+    with_dict: "{{ required_packages }}"
   when: ansible_os_family == 'RedHat'
+
+- block:
+  - name: homebrew update
+    homebrew:
+      update_homebrew: yes
+  - name: main / Install homebrew packages
+    homebrew:
+      name: '{{ item.value }}'
+      # state: '{{ item.state | default("present") }}'
+    with_dict: '{{ required_packages }}'
+  when: ansible_os_family == 'Darwin'
 
 - name: main / Install packages from github
   git:
@@ -30,6 +46,7 @@
     force: yes
     update: yes
   become_user: "{{ ansible_user }}"
+  # become_user: root
   with_dict: "{{ packages_from_github }}"
   notify:
     - Permission change to directories
