@@ -4,6 +4,10 @@
 # fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+glf() {
+    git ls-files | fzf --preview 'head -100 {}'
+}
+
 # Enhancd
 if [ -d $HOME/.enhancd ] ; then
     source $HOME/.enhancd/init.sh
