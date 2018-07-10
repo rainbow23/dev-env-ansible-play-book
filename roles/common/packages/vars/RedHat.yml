@@ -18,3 +18,4 @@ required_packages:
     - zsh
     - tree
     - neovim
+    - the_silver_searcher
