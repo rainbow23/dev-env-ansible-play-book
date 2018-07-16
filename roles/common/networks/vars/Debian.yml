@@ -1,4 +1,0 @@
----
-# vars file for ./roles/networks
-network_packages:
- - "network-manager"
