@@ -181,6 +181,12 @@
     args:
       executable: /bin/bash
     become_user: "{{ ansible_user }}"
+  - name: Set git colorful
+    shell: |
+      git config --global color.ui true
+    args:
+      executable: /bin/bash
+    become_user: "{{ ansible_user }}"
 
 - block:
   - name: Delete cloned directories

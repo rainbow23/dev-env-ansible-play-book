@@ -16,6 +16,8 @@ glf() {
     git ls-files | fzf --preview 'head -100 {}'
 }
 
+export FZF_DEFAULT_OPTS='--height 70% --reverse --border'
+
 # Enhancd
 if [ -d $HOME/.enhancd ] ; then
     source $HOME/.enhancd/init.sh
