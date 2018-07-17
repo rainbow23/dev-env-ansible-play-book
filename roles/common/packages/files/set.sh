@@ -2,7 +2,15 @@
 [[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] && source $HOME/.autojump/etc/profile.d/autojump.sh
 
 # fzf
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+if [  -n "$ZSH_NAME" ]
+then
+    # echo 'running zsh';
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh;
+else
+    # echo 'running bash';
+    [ -f ~/.fzf.bash ] && source ~/.fzf.bash;
+fi
+
 
 glf() {
     git ls-files | fzf --preview 'head -100 {}'
