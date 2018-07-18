@@ -11,9 +11,16 @@ else
     [ -f ~/.fzf.bash ] && source ~/.fzf.bash;
 fi
 
-
 glf() {
-    git ls-files | fzf --preview 'head -100 {}'
+  local out file key
+  out=($(git ls-files | fzf --preview 'head -100 {}' --query="$1" --select-1 --exit-0 --expect=ctrl-v))
+  key=$(head -1 <<< "$out")
+  file=$(head -2 <<< "$out" | tail -1)
+  if [ -n "$file" ]; then
+      if [ "$key" = ctrl-v ] ; then
+        ${EDITOR:-vim} "$file"
+      fi
+  fi
 }
 
 export FZF_DEFAULT_OPTS='--height 70% --reverse --border'
