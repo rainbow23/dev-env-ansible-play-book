@@ -23,6 +23,33 @@ glf() {
   fi
 }
 
+gsh() {
+  git log --graph --color=always \
+      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr" "$@" |
+  fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
+      --bind "ctrl-m:execute:
+                (grep -o '[a-f0-9]\{7\}' | head -1 |
+                xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
+                {}
+FZF-EOF"
+}
+
+# tre() {
+#   local dir
+#   dir=$(tree | fzf --reverse +m) &&
+#   cd "$dir"
+
+#   # dir=$(find ${1:-.} -path '*/\.*' -prune \
+#   #                 -o -type d -print 2> /dev/null | fzf --reverse +m) &&
+#   # cd "$dir"
+# }
+
+# test() {
+#   echo $(find ${1:-.})
+# }
+
+
+export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 export FZF_DEFAULT_OPTS='--height 70% --reverse --border'
 
 # Enhancd
