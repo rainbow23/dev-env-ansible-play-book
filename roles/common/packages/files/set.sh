@@ -13,6 +13,7 @@ fi
 
 glf() {
   local out file key
+  IFS=$'\n'
   out=($(git ls-files | fzf --preview 'head -100 {}' --query="$1" --select-1 --exit-0 --expect=ctrl-v))
   key=$(head -1 <<< "$out")
   file=$(head -2 <<< "$out" | tail -1)
