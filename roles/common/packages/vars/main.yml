@@ -19,7 +19,8 @@ vim_plug_dir:
 
 go_version: "1.8.3"
 python_version: "3.6"
-py_ver: "{{ python_version }}.0"
+# py_ver: "{{ python_version }}.0"
+py_ver: "3.6.0"
 
 anyenv:
   - info: { env: "goenv", ver: "{{ go_version }}" }
