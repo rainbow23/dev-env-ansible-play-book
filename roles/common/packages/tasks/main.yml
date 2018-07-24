@@ -51,7 +51,6 @@
   notify:
     - Permission change to directories
     - Create symlink
-    - Shell set up
 
 - name: force notify handler
   meta: flush_handlers
