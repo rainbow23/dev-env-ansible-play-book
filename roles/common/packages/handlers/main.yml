@@ -15,47 +15,40 @@
     stat:
       path: "{{ home_path }}/.bashrc"
     register: bc
-    listen: Create symlink
+    listen: Symlink
   - name: Delete file at .bashrc
     file:
       path: "{{ home_path }}/.bashrc"
       state: absent
     when: bc.stat.exists == True
-    listen: Create symlink
-  - name: create symlink
-    file:
-      src: "{{ home_path }}/dotfiles/_{{ item }}"
-      dest: "{{ home_path }}/.{{ item }}"
-      owner: "{{ ansible_user }}"
-      group: wheel
-      mode: 0755
-      state: link
-    with_items:
-      - vimrc
-      - bashrc
-      - zshrc
-      - tmux.conf
-    listen: Create symlink
-  - name: check nvim file
+    listen: Symlink
+
+- block:
+  - name: zplug check folder
     stat:
-      path: "{{ home_path }}/.config/nvim"
-    register: nvim_path
-    listen: Create symlink
-  - name: create nvim folder
+      path: "{{ home_path }}/.zplug"
+    register: zplug
+    listen: Install
+  - name: zplug create folder
     file:
-      path: "{{ home_path }}/.config/nvim"
+      path: "{{ home_path }}/.zplug"
       owner: "{{ ansible_user }}"
       group: wheel
-      mode: 0755
+      mode: 0775
       state: directory
-    when: nvim_path.stat.exists == False
-    listen: Create symlink
-  - name: create nvim symlink
-    file:
-      src: "{{ home_path }}/dotfiles/_vimrc"
-      dest: "{{ home_path }}/.config/nvim/init.vim"
-      owner: "{{ ansible_user }}"
-      group: wheel
-      mode: 0755
-      state: link
-    listen: Create symlink
+    when: zplug.stat.exists == False
+    listen: Install
+  - name: .zplug folder is empty check
+    find:
+      paths: "{{ home_path }}/.zplug"
+      file_type: directory
+    register: is_empty_zplug
+    listen: Install
+  - name: zplug Install
+    shell: >
+      curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
+    args:
+      executable: /bin/bash
+    become_user: "{{ ansible_user }}"
+    when: is_empty_zplug.matched|int == 0
+    listen: Install

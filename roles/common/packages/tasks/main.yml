@@ -15,12 +15,17 @@
   when: ansible_os_family == 'Debian'
 
 - block:
+  - name: Has neovim Dir?
+    stat:
+      path: "/etc/yum.repos.d/dperson-neovim-epel-7.repo"
+    register: neovim_path
   - name: Download neovim
     shell: |
       yum -y install epel-release
       curl -o /etc/yum.repos.d/dperson-neovim-epel-7.repo https://copr.fedorainfracloud.org/coprs/dperson/neovim/repo/epel-7/dperson-neovim-epel-7.repo
     args:
       executable: /bin/bash
+    when: neovim_path.stat.exists == False
   - name: main / Install the yum packages
     yum:
       name: "{{ item.value }}"
@@ -50,22 +55,11 @@
   with_dict: "{{ packages_from_github }}"
   notify:
     - Permission change to directories
-    - Create symlink
+    - Symlink
+    - Install
 
 - name: force notify handler
   meta: flush_handlers
-
-- name: check autojump file
-  stat:
-    path: "/.autojump/etc/profile.d/autojump.sh"
-  register: aj_path
-- name: Install autojump
-  shell: "cd {{ home_path }}/autojump && ./install.py"
-  args:
-    executable: /bin/bash
-  become_user: "{{ ansible_user }}"
-  when: aj_path.stat.exists == False
-  register: result
 
 - name: Install anyenv
   shell: |
@@ -91,55 +85,6 @@
   become_user: "{{ ansible_user }}"
   changed_when: False
   register: result
-
-- name: Install fzf
-  shell: |
-    cd $HOME/.fzf
-    ./install
-    exec $SHELL -l
-  become_user: "{{ ansible_user }}"
-  changed_when: False
-  register: result
-
-- block:
-  - name: vim-plug ディレクトリの存在チェック
-    stat:
-      path: "{{ home_path }}/{{ item.path }}"
-    register: vim_path
-    with_items: "{{ vim_plug_dir }}"
-  - name: debug vim_path
-    debug:
-      msg: "item.path= {{ item.item.path }} exists= {{ item.stat.exists }}"
-    with_items: "{{ vim_path.results }}"
-  - name: Create vim-plug directory
-    file:
-      path: "{{ home_path }}/{{ item.item.path }}"
-      owner: "{{ ansible_user }}"
-      group: wheel
-      mode: 0755
-      state: directory
-    when: item.stat.exists == False
-    with_items: "{{ vim_path.results }}"
-  - name: Install vim-plug
-    get_url:
-      url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-      dest: "{{ home_path }}/{{ item.item.path }}/plug.vim"
-      mode: 0755
-      owner: "{{ ansible_user }}"
-    with_items: "{{ vim_path.results }}"
-
-
-- block:
-  - name: Install check enhancd finder
-    stat:
-      path: /usr/local/bin/finder
-    register: finder_path
-  - name: Install enhancd finder
-    shell: >
-      sh -c "curl https://raw.githubusercontent.com/b4b4r07/cli-finder/master/bin/finder -o /usr/local/bin/finder && chmod +x /usr/local/bin/finder"
-    args:
-      executable: /bin/bash
-    when: finder_path.stat.exists == False
 
 - block:
   - name: /usr/local/bin/vim ディレクトリの存在チェック
@@ -172,14 +117,6 @@
     when: vim_path.stat.exists == False
     args:
       executable: /bin/bash
-  - name: PlugInstall from vim-plug
-    shell: |
-      vim -E -s -c "source ~/.vimrc" +PlugInstall +qall -V
-    failed_when: false
-    ignore_errors: yes
-    args:
-      executable: /bin/bash
-    become_user: "{{ ansible_user }}"
   - name: Set git colorful
     shell: |
       git config --global color.ui true
@@ -193,7 +130,7 @@
       path: "{{ home_path }}/{{ item }}"
       state: absent
     with_items:
-      - autojump
+      # - autojump
       - tmuxsrc
       - vim8src
 
@@ -202,3 +139,14 @@
     name: "{{ ansible_user }}"
     shell: /bin/zsh
   become: true
+
+- name: dotfiles settings
+  shell: |
+    cd "{{ home_path }}/dotfiles"
+    git fetch origin feature_clean_shellfile
+    git checkout feature_clean_shellfile
+    ./init.sh
+  args:
+    executable: /bin/bash
+  become_user: "{{ ansible_user }}"
+

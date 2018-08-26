@@ -3,19 +3,11 @@
 github_base_path: "https://github.com"
 
 packages_from_github:
-  - info: { path: "{{ github_base_path }}/wting/autojump.git",     dir: "autojump" }
   - info: { path: "{{ github_base_path }}/rainbow23/dotfiles.git", dir: "dotfiles" }
   - info: { path: "{{ github_base_path }}/tmux/tmux.git",          dir: "tmuxsrc" }
   - info: { path: "{{ github_base_path }}/tmux-plugins/tpm",       dir: ".tmux/plugins/tpm" }
   - info: { path: "{{ github_base_path }}/vim/vim",                dir: "vim8src" }
   - info: { path: "{{ github_base_path }}/riywo/anyenv",           dir: ".anyenv" }
-  - info: { path: "{{ github_base_path }}/junegunn/fzf",           dir: ".fzf" }
-  - info: { path: "{{ github_base_path }}/b4b4r07/enhancd.git",    dir: ".enhancd" }
-
-vim_plug_dir:
-  - path: "/.vim/autoload"
-  - path: "/.local/share/nvim/site/autoload"
-
 
 go_version: "1.8.3"
 python_version: "3.6"
