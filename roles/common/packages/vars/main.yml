@@ -7,16 +7,9 @@ packages_from_github:
   - info: { path: "{{ github_base_path }}/tmux/tmux.git",          dir: "tmuxsrc" }
   - info: { path: "{{ github_base_path }}/tmux-plugins/tpm",       dir: ".tmux/plugins/tpm" }
   - info: { path: "{{ github_base_path }}/vim/vim",                dir: "vim8src" }
-  - info: { path: "{{ github_base_path }}/riywo/anyenv",           dir: ".anyenv" }
 
-go_version: "1.8.3"
 python_version: "3.6"
-# py_ver: "{{ python_version }}.0"
 py_ver: "3.6.0"
-
-anyenv:
-  - info: { env: "goenv", ver: "{{ go_version }}" }
-  - info: { env: "pyenv", ver: "{{ py_ver }}" }
 
 pyenv_path: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ py_ver }}/bin/python{{ python_version }}"
 pyenv_gnu: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ py_ver }}/lib/python3.6/config-3.6m-x86_64-linux-gnu"

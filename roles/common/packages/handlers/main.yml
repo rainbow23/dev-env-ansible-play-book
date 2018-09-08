@@ -22,33 +22,3 @@
       state: absent
     when: bc.stat.exists == True
     listen: Symlink
-
-- block:
-  - name: zplug check folder
-    stat:
-      path: "{{ home_path }}/.zplug"
-    register: zplug
-    listen: Install
-  - name: zplug create folder
-    file:
-      path: "{{ home_path }}/.zplug"
-      owner: "{{ ansible_user }}"
-      group: wheel
-      mode: 0775
-      state: directory
-    when: zplug.stat.exists == False
-    listen: Install
-  - name: .zplug folder is empty check
-    find:
-      paths: "{{ home_path }}/.zplug"
-      file_type: directory
-    register: is_empty_zplug
-    listen: Install
-  - name: zplug Install
-    shell: >
-      curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh| zsh
-    args:
-      executable: /bin/bash
-    become_user: "{{ ansible_user }}"
-    when: is_empty_zplug.matched|int == 0
-    listen: Install
