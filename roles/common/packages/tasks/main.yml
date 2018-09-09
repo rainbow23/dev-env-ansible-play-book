@@ -74,7 +74,7 @@
 
 - name: dotfiles settings
   shell: |
-    chmod -R 755 ~/.zplug
+    chmod -R 755 ~/dotfiles
     cd "{{ home_path }}/dotfiles"
     git fetch origin feature_clean_shellfile
     git checkout feature_clean_shellfile_del_zplug
