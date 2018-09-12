@@ -79,9 +79,9 @@
     git fetch origin feature_clean_shellfile
     git checkout feature_clean_shellfile_del_zplug
     ./init.sh
-    ./source.sh
+    source ~/.zshrc
   args:
-    executable: /bin/bash
+    executable: /bin/zsh
   become_user: "{{ ansible_user }}"
 
 - block:
