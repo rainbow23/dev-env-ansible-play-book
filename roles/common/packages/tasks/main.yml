@@ -60,24 +60,11 @@
 - name: force notify handler
   meta: flush_handlers
 
-- block:
-  - name: Install check enhancd finder
-    stat:
-      path: /usr/local/bin/finder
-    register: finder_path
-  - name: Install enhancd finder
-    shell: >
-      sh -c "curl https://raw.githubusercontent.com/b4b4r07/cli-finder/master/bin/finder -o /usr/local/bin/finder && chmod +x /usr/local/bin/finder"
-    args:
-      executable: /bin/bash
-    when: finder_path.stat.exists == False
-
 - name: dotfiles settings
   shell: |
     chmod -R 755 ~/dotfiles
     cd "{{ home_path }}/dotfiles"
-    git fetch origin feature_clean_shellfile
-    git checkout feature_clean_shellfile_del_zplug
+    git checkout master
     ./init.sh
     source ~/.zshrc
   args:
