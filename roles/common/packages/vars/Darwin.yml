@@ -1,0 +1,8 @@
+required_packages:
+  kind:
+    - tmux
+    - git
+    - zsh
+    - neovim
+    - python
+    - python3

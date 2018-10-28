@@ -78,6 +78,8 @@
     register: vim_path
   - name: compile vim
     shell: >
+      # pip3 install neovim
+      # pip install --upgrade pip
       cd {{ home_path }}/vim8src && ./configure
       --enable-fail-if-missing
       --with-features=huge

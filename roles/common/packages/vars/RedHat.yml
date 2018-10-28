@@ -17,5 +17,4 @@ required_packages:
     - git
     - zsh
     - tree
-    - neovim
     - the_silver_searcher
