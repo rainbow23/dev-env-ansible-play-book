@@ -5,13 +5,16 @@
 
 - name: debug
   debug:
-    # msg: "os family={{ ansible_os_family }}"
+    msg: "os family={{ ansible_os_family }}"
     msg: "required_packages item={{ item.value  }}"
   with_dict: '{{ required_packages }}'
 
 - name: main / Update apt packages
   apt:
     update_cache: yes
+    name: "{{ item.value }}"
+    state: present
+  with_dict: "{{ required_packages }}"
   when: ansible_os_family == 'Debian'
 
 - block:
@@ -65,63 +68,10 @@
     chmod -R 755 ~/dotfiles
     cd "{{ home_path }}/dotfiles"
     git checkout master
+    ./install_vim.sh
     ./init.sh
-    source ~/.zshrc
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    vim +slient +PlugInstall +qall
   args:
     executable: /bin/zsh
   become_user: "{{ ansible_user }}"
-
-- block:
-  - name: /usr/local/bin/vim ディレクトリの存在チェック
-    stat:
-      path: /usr/local/bin/vim
-    register: vim_path
-  - name: compile vim
-    shell: >
-      # pip3 install neovim
-      # pip install --upgrade pip
-      cd {{ home_path }}/vim8src && ./configure
-      --enable-fail-if-missing
-      --with-features=huge
-      --disable-selinux
-      --enable-luainterp
-      --enable-perlinterp
-      --enable-python3interp vi_cv_path_python3={{ pyenv_path }}
-      --with-python3-config-dir={{ pyenv_gnu }}
-      --enable-cscope
-      --enable-fontset
-      --enable-multibyte
-    args:
-      executable: /bin/bash
-    become_user: "{{ ansible_user }}"
-    when: vim_path.stat.exists == False
-  - name: Make & install Vim
-    shell: |
-      cd {{ home_path }}/vim8src
-      make
-      make install
-      git reset --hard
-    when: vim_path.stat.exists == False
-    args:
-      executable: /bin/bash
-
-- block:
-  - name: Delete cloned directories
-    file:
-      path: "{{ home_path }}/{{ item }}"
-      state: absent
-    with_items:
-      - tmuxsrc
-      - vim8src
-  - name: Default shell to zsh
-    user:
-      name: "{{ ansible_user }}"
-      shell: /bin/zsh
-    become: true
-  - name: Set git colorful
-    shell: |
-      git config --global color.ui true
-    args:
-      executable: /bin/bash
-    become_user: "{{ ansible_user }}"
-

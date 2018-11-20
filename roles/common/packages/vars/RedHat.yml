@@ -1,9 +1,12 @@
 ---
 # vars file for ./roles/packages
-
 required_packages:
-  kind:
+  - kind:
+    - automake
+    - ncurses-devel
+    - make
     - gcc
+    - curl
     - lua-devel
     - perl-ExtUtils-Embed
     - zlib-devel
@@ -13,8 +16,9 @@ required_packages:
     - sqlite
     - sqlite-devel
     - openssl-devel
-    - tmux
+    - libevent-devel
     - git
     - zsh
+    - pcre-devel
+    - xz-devel
     - tree
-    - the_silver_searcher

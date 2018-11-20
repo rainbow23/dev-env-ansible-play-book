@@ -4,12 +4,4 @@ github_base_path: "https://github.com"
 
 packages_from_github:
   - info: { path: "{{ github_base_path }}/rainbow23/dotfiles.git", dir: "dotfiles" }
-  - info: { path: "{{ github_base_path }}/tmux/tmux.git",          dir: "tmuxsrc" }
   - info: { path: "{{ github_base_path }}/tmux-plugins/tpm",       dir: ".tmux/plugins/tpm" }
-  - info: { path: "{{ github_base_path }}/vim/vim",                dir: "vim8src" }
-
-python_version: "3.6"
-py_ver: "3.6.0"
-
-pyenv_path: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ py_ver }}/bin/python{{ python_version }}"
-pyenv_gnu: "/home/{{ ansible_user }}/.anyenv/envs/pyenv/versions/{{ py_ver }}/lib/python3.6/config-3.6m-x86_64-linux-gnu"

@@ -2,4 +2,25 @@
 # vars file for ./roles/packages
 
 required_packages:
- - "build-essential"
+  kind:
+    - gcc
+    # - lua-devel
+    - lua5.1
+    - perl-modules
+    # - perl-ExtUtils-Embed
+    - zlib1g-dev
+    # - zlib-devel
+    - bzip2
+    # - bzip2-devel
+    # - readline
+    # - readline-devel
+    - sqlite
+    # - sqlite-devel
+    - openssl
+    # - openssl-devel
+    - tmux
+    - git
+    - zsh
+    - tree
+    - silversearcher-ag
+    - task-japanese
