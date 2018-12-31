@@ -67,11 +67,29 @@
   shell: |
     chmod -R 755 ~/dotfiles
     cd "{{ home_path }}/dotfiles"
-    git checkout master
+    git checkout develop
     ./install_vim.sh
     ./init.sh
     curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
     vim +slient +PlugInstall +qall
+    sudo chsh -s /bin/zsh
   args:
     executable: /bin/zsh
   become_user: "{{ ansible_user }}"
+
+- name: amazon linux
+  shell: |
+    sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    sudo yum install -y epel-release
+    sudo yum-config-manager --enable epel
+    #docker
+    sudo yum install -y docker
+    sudo usermod -a -G docker ec2-user
+    #docker-compose
+    curl -L https://github.com/docker/compose/releases/download/1.12.0/docker-compose-`uname -s`-`uname -m` > docker-compose
+    sudo mv docker-compose /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+  args:
+    executable: /bin/zsh
+  become_user: "{{ ansible_user }}"
+
