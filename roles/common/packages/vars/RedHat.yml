@@ -20,5 +20,9 @@ required_packages:
     - git
     - zsh
     - pcre-devel
+    - xz
     - xz-devel
+    - wget
+    - docker
+    - docker-compose
     - tree
